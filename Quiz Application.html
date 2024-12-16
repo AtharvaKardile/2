@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Application</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .quiz-container {
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 400px;
+        }
+
+        .question {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+
+        .answers {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .answers li {
+            margin: 10px 0;
+        }
+
+        .answers input {
+            margin-right: 10px;
+        }
+
+        .submit-btn {
+            background-color: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .submit-btn:hover {
+            background-color: #218838;
+        }
+
+        .result {
+            display: none;
+            text-align: center;
+            font-size: 1.2rem;
+            margin-top: 20px;
+        }
+
+        .result p {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="quiz-container">
+        <h2>Quiz Application</h2>
+        <div class="question-container">
+            <p class="question" id="questionText">Question will appear here</p>
+            <ul class="answers" id="answerOptions">
+                <!-- Answer options will appear here -->
+            </ul>
+            <button class="submit-btn" id="submitBtn">Next</button>
+        </div>
+        <div class="result">
+            <p>Your Score: <span id="score"></span> / <span id="totalQuestions"></span></p>
+        </div>
+    </div>
+
+    <script>
+        const quizData = [
+            {
+                question: "What is the capital of France?",
+                options: ["Paris", "London", "Berlin", "Madrid"],
+                correct: 0
+            },
+            {
+                question: "Which planet is known as the Red Planet?",
+                options: ["Earth", "Mars", "Jupiter", "Saturn"],
+                correct: 1
+            },
+            {
+                question: "Who wrote 'Romeo and Juliet'?",
+                options: ["Shakespeare", "Dickens", "Austen", "Hemingway"],
+                correct: 0
+            },
+            {
+                question: "What is the largest ocean on Earth?",
+                options: ["Atlantic", "Indian", "Arctic", "Pacific"],
+                correct: 3
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        const totalQuestions = quizData.length;
+
+        const questionText = document.getElementById("questionText");
+        const answerOptions = document.getElementById("answerOptions");
+        const submitBtn = document.getElementById("submitBtn");
+        const resultContainer = document.querySelector(".result");
+        const scoreDisplay = document.getElementById("score");
+        const totalQuestionsDisplay = document.getElementById("totalQuestions");
+
+        function loadQuestion() {
+            const currentQuestion = quizData[currentQuestionIndex];
+            questionText.textContent = currentQuestion.question;
+            answerOptions.innerHTML = "";
+
+            currentQuestion.options.forEach((option, index) => {
+                const li = document.createElement("li");
+                li.innerHTML = `
+                    <label>
+                        <input type="radio" name="answer" value="${index}" /> ${option}
+                    </label>
+                `;
+                answerOptions.appendChild(li);
+            });
+        }
+
+        function checkAnswer() {
+            const selectedOption = document.querySelector('input[name="answer"]:checked');
+            if (selectedOption) {
+                const answerIndex = parseInt(selectedOption.value);
+                if (answerIndex === quizData[currentQuestionIndex].correct) {
+                    score++;
+                }
+            }
+        }
+
+        function showResult() {
+            questionText.style.display = "none";
+            answerOptions.style.display = "none";
+            submitBtn.style.display = "none";
+            resultContainer.style.display = "block";
+            scoreDisplay.textContent = score;
+            totalQuestionsDisplay.textContent = totalQuestions;
+        }
+
+        submitBtn.addEventListener("click", function () {
+            checkAnswer();
+
+            if (currentQuestionIndex < totalQuestions - 1) {
+                currentQuestionIndex++;
+                loadQuestion();
+            } else {
+                showResult();
+            }
+        });
+
+        // Initial call to load the first question
+        loadQuestion();
+    </script>
+
+</body>
+</html>
